@@ -122,6 +122,7 @@ function generateItems(items) {
   document.querySelector(".todo_items").replaceChildren(...todoItems);
 }
 
+// Function for Edit and Delete Actions
 function iconsAction(id, type) {
   if (type === "edit") {
     editIcon.onclick = function (event) {
@@ -214,10 +215,10 @@ function toast(text) {
     duration: 1000,
     newWindow: true,
     close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "center", // `left`, `center` or `right`
+    gravity: "top",
+    position: "center",
     backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-    stopOnFocus: true, // Prevents dismissing of toast on hover
+    stopOnFocus: true,
   }).showToast();
 }
 

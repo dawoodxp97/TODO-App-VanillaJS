@@ -276,7 +276,7 @@ body {
   width: 50vw;
   padding: 2rem;
   position: relative;
-  border: 1px solid white;
+  border: 1.2px solid white;
   color: var(--text-color);
 }
 .modal_close {
@@ -319,8 +319,6 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-
 .clear_subitems{
   margin-top: 2rem;
   margin-left: 15rem;
