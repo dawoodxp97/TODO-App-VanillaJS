@@ -1,7 +1,10 @@
+var todoItemsGrp = document.querySelector(".todo_items");
 var changeBg = document.getElementById("bg-img");
 var rootElem = document.querySelector(":root");
-var themeBtn = document.getElementById("theme-toggle");
 var themeIcon = document.getElementById("theme-icon");
+var searchIcon = document.getElementById("search-icon");
+var searchGrp = document.getElementById("search-grp");
+var searchInp = document.getElementById("search-todo-input");
 var totalPendingItems = document.getElementById("pending-items");
 var clearBtn = document.getElementById("items-clear");
 var editIcon = document.getElementById("edit-icon");
@@ -13,6 +16,10 @@ var modalForm = document.getElementById("modal-form");
 var editForm = document.getElementById("edit-form");
 var clearSubItems = document.getElementById("clear-sub");
 var editInput = document.getElementById("edit-inp");
+var pinnedDiv = document.querySelector(".pinned_div");
+var sortItems = document.querySelector(".items_statuses");
+var btns = sortItems.getElementsByTagName("span");
+var searchedTodos = document.getElementById("searched-todos");
 
 // Light / Dark Theme Functions
 function changeThemeIcon() {
@@ -52,7 +59,7 @@ function changeThemeColor() {
   }
 }
 
-themeBtn.addEventListener("click", () => {
+themeIcon.addEventListener("click", () => {
   changeThemeIcon();
   changeThemeBg();
   changeThemeColor();
@@ -71,6 +78,8 @@ function getItems() {
     });
     generateItems(items);
     clearTasksBtn(items);
+    sItems = items;
+    console.log(sItems);
   });
 }
 
@@ -89,6 +98,7 @@ function clearTasksBtn(items) {
 }
 
 function generateItems(items) {
+  let pinnedTodoItems = [];
   let todoItems = [];
   items.forEach((item) => {
     let todoItem = document.createElement("div");
@@ -111,15 +121,66 @@ function generateItems(items) {
     }
     let todoIcons = document.createElement("div");
     todoIcons.classList.add("todo_icons");
+    let pinDiv = document.createElement("div");
+    pinDiv.classList.add("pin-div");
+    pinDiv.innerHTML =
+      '<img id="pin-icon" src="https://cdn-icons-png.flaticon.com/128/889/889668.png"/>';
+    todoIcons.appendChild(pinDiv);
+    let cpinDiv = document.createElement("div");
+    cpinDiv.classList.add("c_pin_div");
+    cpinDiv.innerHTML = "Pin Task";
+    cpinDiv.addEventListener("click", function () {
+      createPinTask(item?.id);
+    });
+    todoIcons.appendChild(cpinDiv);
     todoItem.appendChild(checkContainer);
     todoItem.appendChild(todoText);
     todoItem.appendChild(todoIcons);
-    todoText.addEventListener("click", function () {
-      openModal(item);
+    if (item?.pinned === false) {
+      pinDiv.style.display = "none";
+      cpinDiv.style.display = "block";
+    } else if (item?.pinned === true) {
+      pinDiv.style.display = "block";
+      cpinDiv.style.display = "none";
+    }
+    pinDiv.addEventListener("click", function () {
+      removePinTask(item?.id);
     });
-    todoItems.push(todoItem);
+
+    if (item?.status === "active") {
+      todoText.addEventListener("click", function () {
+        openModal(item);
+      });
+      todoItem.classList.add("active_task");
+    } else if (item?.status === "completed") {
+      todoItem.classList.add("completed_task");
+    }
+    if (item?.pinned === false) {
+      todoItems.push(todoItem);
+    } else if (item?.pinned === true) {
+      pinnedTodoItems.push(todoItem);
+    }
   });
-  document.querySelector(".todo_items").replaceChildren(...todoItems);
+  pinnedDiv.replaceChildren(...pinnedTodoItems);
+  todoItemsGrp.replaceChildren(...todoItems);
+}
+
+function removePinTask(id) {
+  db.collection("todo_items").doc(id).set(
+    {
+      pinned: false,
+    },
+    { merge: true }
+  );
+}
+
+function createPinTask(id) {
+  db.collection("todo_items").doc(id).set(
+    {
+      pinned: true,
+    },
+    { merge: true }
+  );
 }
 
 // Function for Edit and Delete Actions
@@ -166,10 +227,14 @@ function iconsAction(id, type) {
 function addItem(event) {
   event.preventDefault();
   let text = document.getElementById("todo-input");
-  let newItem = db.collection("todo_items").add({
-    text: text.value,
-    status: "active",
-  });
+  let newItem = db.collection("todo_items").doc().set(
+    {
+      pinned: false,
+      text: text.value,
+      status: "active",
+    },
+    { merge: true }
+  );
   text.value = "";
   toast("Todo Created");
 }
@@ -259,10 +324,14 @@ function openModal(item) {
       .collection("todo_items")
       .doc(item.id)
       .collection("subtask")
-      .add({
-        text: text.value,
-        status: "active",
-      })
+      .doc()
+      .set(
+        {
+          text: text.value,
+          status: "active",
+        },
+        { merge: true }
+      )
       .then(() => {
         //Task Added
         text.value = "";
@@ -306,6 +375,10 @@ function generateSubTodoItems(subItems, id) {
     checkContainer.appendChild(checkMark);
     let todoText = document.createElement("div");
     todoText.classList.add("todo_text");
+    todoText.classList.add("sub_todo");
+    todoText.addEventListener("click", function () {
+      console.log(item?.id);
+    });
     todoText.innerText = item.text;
     if (item.status === "completed") {
       checkMark.classList.add("checked");
@@ -372,9 +445,91 @@ function clearSubTasksBtn(items) {
     clearSubItems.style.display = "block";
   }
 }
+
 modalClose.addEventListener("click", function () {
+  editInput.style.display = "none";
   modalGrp.style.display = "none";
 });
 
+function getSort() {
+  for (let i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function () {
+      const current = document.getElementsByClassName("active");
+      const comElems = document.getElementsByClassName("completed_task");
+      const actElems = document.getElementsByClassName("active_task");
+      current[0].className = current[0].className.replace("active", "");
+      this.className += " active";
+      if (this.classList.contains("act")) {
+        for (let a = 0; a < comElems.length; a++) {
+          comElems[a].style.display = "none";
+        }
+        for (let b = 0; b < actElems.length; b++) {
+          actElems[b].style.display = "flex";
+        }
+      } else if (this.classList.contains("com")) {
+        for (let a = 0; a < comElems.length; a++) {
+          comElems[a].style.display = "flex";
+        }
+        for (let b = 0; b < actElems.length; b++) {
+          actElems[b].style.display = "none";
+        }
+      } else if (this.classList.contains("all")) {
+        for (let a = 0; a < comElems.length; a++) {
+          comElems[a].style.display = "flex";
+        }
+        for (let b = 0; b < actElems.length; b++) {
+          actElems[b].style.display = "flex";
+        }
+      }
+    });
+  }
+}
+searchIcon.addEventListener("click", function () {
+  if (searchGrp.style.display !== "none") {
+    searchGrp.style.display = "none";
+  } else {
+    searchGrp.style.display = "block";
+  }
+});
+
+function displaySearched(items) {
+  let searchedItems = [];
+  items.forEach((item) => {
+    let sItem = document.createElement("div");
+    sItem.classList.add("searched_item");
+    sItem.setAttribute("id", "searched-item");
+    let sHead = document.createElement("h3");
+    sHead.innerText = item.text;
+    sItem.appendChild(sHead);
+    sItem.addEventListener("click", function () {
+      openModal(item);
+    });
+    searchedItems.push(sItem);
+  });
+  searchedTodos.replaceChildren(...searchedItems);
+}
+searchInp.addEventListener("keyup", (e) => {
+  const searchString = e.target.value.toLowerCase();
+  const filteredItems = sItems.filter((res) => {
+    return res.text.toLowerCase().includes(searchString);
+  });
+  if (!searchString) {
+    displayEmptySearched();
+  } else {
+    displaySearched(filteredItems);
+  }
+});
+
+function displayEmptySearched() {
+  searchedTodos.innerHTML = "";
+  let emp = document.createElement("div");
+  emp.classList.add("empty_list");
+  let empText = document.createElement("div");
+  empText.innerText = "Please type to search...";
+  emp.appendChild(empText);
+  searchedTodos.appendChild(emp);
+}
+
+getSort();
 checkPending();
 getItems();

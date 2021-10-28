@@ -12,11 +12,14 @@
   --title-color: hsl(0, 8%, 15%);
   --text-color: hsl(233, 14%, 35%);
   --text-color-light: hsl(234, 39%, 85%);
-  --body-color: hsl(233, 11%, 84%);
+  --body-color: hsl(0deg 0% 97%);
   --scroll-bar-color: hsl(250, 12%, 90%);
   --scroll-thumb-color: hsl(250, 12%, 80%);
   /*========== Font and typography ==========*/
   --body-font: 'Josefin Sans', sans-serif;
+    /*========== Others ==========*/
+  --task-all: flex;
+  --task-status: flex;
 
 }
 
@@ -58,6 +61,7 @@ body {
   max-width: 700px;
   margin: 0 30px;
   margin-top: 100px;
+  position: relative;
 }
 .header {
   display: flex;
@@ -80,11 +84,11 @@ body {
 }
 .theme_toggle{
   height: 2rem;
-  width: 2rem;
+  width: 6rem;
   color: #ffffff;
   font-size: 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   cursor: pointer;
 }
@@ -146,7 +150,7 @@ body {
   border: none;
   outline: none;
   color: var(--text-color);
-  margin-left: 1.5rem;
+  margin-left: 0.4rem;
 }
 
 .new_todo_input form {
@@ -155,7 +159,8 @@ body {
 }
 
 .new_todo_input input::placeholder {
-  color: hsl(233, 14%, 35%);
+  color: var(--text-color);
+  font-size: 1.05rem;
   font-family: var(--body-font);
 }
 
@@ -186,6 +191,7 @@ body {
   background-color: var(--light-color);
   box-shadow: 0px 2px 30px 0px rgba(0,0,0,0.4);
   margin-bottom: 30px;
+
 }
 
 .todo_items_info {
@@ -234,12 +240,63 @@ body {
   width: 6rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   height: 100%;
   cursor: pointer;
 }
 .s_check{
   margin-left: 1rem;
+}
+.search_grp{
+  position: absolute;
+  width: 100%;
+  min-height: 8rem;
+  height: auto;
+  background-color: var(--light-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  display: none;
+  transition: 0.2s ease-in;
+}
+.search_todo_input{
+  z-index: 9;
+}
+.searched_todos{
+  margin-top: 1rem;
+}
+.searched_item{
+  padding-left: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+  height: 2rem;
+  background-color: var(--text-color-light);
+  margin-top: 1rem;
+  transition: all .25s ease;
+  transition-property: box-shadow, transform, border-color;
+  border-radius: 0.5rem;
+}
+.searched_item > h3{
+  display: inline;
+}
+.searched_item:hover{
+  transform: translateY(-2px);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-color: hsl(235, 24%, 19%);
+}
+
+#search-todo-input{
+  background: none;
+  width: 100%;
+  border: none;
+  outline: none;
+  height: 2rem;
+  color: var(--text-color);
+  letter-spacing: 1px;
+}
+.empty_list > div{
+  margin-top: 2rem;
 }
 /*========== SCROLL BAR ==========*/
 ::-webkit-scrollbar {
@@ -333,10 +390,86 @@ body {
   border-radius: 0.5rem;
   padding: 10px 0px;
   font-size: 18px;
-  background-color: #b3f0ff;
   border: none;
   outline: none;
   color: var(--text-color);
   margin-left: 1.5rem;
   display: none;
+  letter-spacing: 1px;
 }
+#pin-icon{
+  height: 1rem;
+  width: 1rem;
+  margin-left: 3rem;
+}
+.c_pin_div{
+  font-size: medium;
+  margin-right: -3rem;
+  color: var(--body-font);
+}
+.c_pin_div:hover{
+  color: blue;
+}
+
+.active_task{
+  display: var(--task-status);
+}
+
+
+@media only screen and (max-width: 375px) and (min-width: 320px) {
+  .title{
+    font-size: 2rem;
+    margin-left: 1rem;
+  }
+  .new_todo{
+    width: 90%;
+    height: 40px;
+    margin-left: 1rem;
+  }
+  .check_mark{
+    height: 20px;
+    width: 20px;
+  }
+  .new_todo_input input::placeholder {
+    font-size: smaller;
+ }
+ .theme_toggle{
+   margin-right: 1rem;
+ }
+ .todo_items_wrapper{
+   width: 90%;
+   margin-left: 1rem;
+ }
+ .todo_items{
+   width: 100%;
+ }
+ .todo_item{
+   height: 50px;
+ }
+ .check{
+   margin-left: 1rem;
+ }
+ .todo_text{
+   margin-left: 0.5rem;
+   width: 95%;
+   flex: none;
+   font-size: small;
+ }
+ .modal_content{
+   width: 95vw;
+ }
+ .modal_inner{
+   margin-top: 1rem;
+ }
+ .clear_subitems{
+   margin-left: 2rem;
+   width: 4rem;
+ }
+ .clear_subitems>p{
+   width: 8rem;
+ }
+ .todo_icons{
+   margin-left: 0.5rem;
+ }
+}
+

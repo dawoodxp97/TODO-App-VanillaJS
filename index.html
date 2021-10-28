@@ -76,8 +76,21 @@
       <div class="header">
         <div class="title">TODO</div>
         <div id="theme-toggle" class="theme_toggle">
+          <i id="search-icon" class="uil uil-search"></i>
           <i id="theme-icon" class="uil uil-moon"></i>
         </div>
+      </div>
+      <div id="search-grp" class="search_grp">
+        <div class="search_todo_input">
+          <form>
+            <input
+              id="search-todo-input"
+              type="text"
+              placeholder="Search a TODO..."
+            />
+          </form>
+        </div>
+        <div class="searched_todos" id="searched-todos"></div>
       </div>
       <div id="new-todo" class="new_todo">
         <div class="s_check"></div>
@@ -90,20 +103,22 @@
               id="todo-input"
               type="text"
               placeholder="Create a new TODO..."
+              required
             />
           </form>
         </div>
       </div>
       <div class="todo_items_wrapper">
+        <div class="pinned_div"></div>
         <div class="todo_items">
           <!--All the items will be added here dynamically-->
         </div>
         <div id="todo-info" class="todo_items_info">
           <div id="pending-items" class="items_left"></div>
           <div class="items_statuses">
-            <span class="active">All</span>
-            <span>Active</span>
-            <span>Completed</span>
+            <span class="all active">All</span>
+            <span class="act">Active</span>
+            <span class="com">Completed</span>
           </div>
           <div id="items-clear" onclick="clearCompleted()" class="items_clear">
             <span>Clear Completed</span>
