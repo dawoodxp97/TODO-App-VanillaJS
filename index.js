@@ -79,7 +79,6 @@ function getItems() {
     generateItems(items);
     clearTasksBtn(items);
     sItems = items;
-    console.log(sItems);
   });
 }
 
@@ -376,16 +375,77 @@ function generateSubTodoItems(subItems, id) {
     let todoText = document.createElement("div");
     todoText.classList.add("todo_text");
     todoText.classList.add("sub_todo");
-    todoText.addEventListener("click", function () {
-      console.log(item?.id);
-    });
     todoText.innerText = item.text;
     if (item.status === "completed") {
       checkMark.classList.add("checked");
       todoText.classList.add("checked");
     }
+    let subEditForm = document.createElement("form");
+    subEditForm.setAttribute("id", "sub-edit-form");
+    let subInput = document.createElement("input");
+    subInput.setAttribute("id", "sub-edit-inp");
+    subInput.setAttribute("type", "text");
+    subInput.setAttribute("placeholder", "Edit Sub TODO..");
+    subInput.setAttribute("value", item?.text);
+    subInput.classList.add("sub_edit_inp");
+    subEditForm.appendChild(subInput);
+    subEditForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      let text = subInput.value;
+      db.collection("todo_items")
+        .doc(id)
+        .collection("subtask")
+        .doc(item.id)
+        .update({
+          text: text,
+        })
+        .then(() => {
+          //Doc updated
+          subInput.value = "";
+          subEditForm.style.display = "none";
+          todoText.style.display = "flex";
+        })
+        .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+    });
+    subEditForm.style.display = "none";
+    let todoIcons = document.createElement("div");
+    todoIcons.classList.add("todo_icons");
+    let subEditIcons = document.createElement("i");
+    subEditIcons.classList.add("uil");
+    subEditIcons.classList.add("uil-pen");
+    let subDeleteIcon = document.createElement("i");
+    subDeleteIcon.classList.add("uil");
+    subDeleteIcon.classList.add("uil-trash");
+    todoIcons.appendChild(subEditIcons);
+    todoIcons.appendChild(subDeleteIcon);
     subTodoItem.appendChild(checkContainer);
     subTodoItem.appendChild(todoText);
+    subTodoItem.appendChild(subEditForm);
+    subTodoItem.appendChild(todoIcons);
+    subEditIcons.addEventListener("click", function () {
+      let getCss = window.getComputedStyle(todoText);
+      if (getCss.getPropertyValue("display") === "flex") {
+        subEditForm.style.display = "flex";
+        todoText.style.display = "none";
+      } else if (getCss.getPropertyValue("display") === "none") {
+        subEditForm.style.display = "none";
+        todoText.style.display = "flex";
+      }
+    });
+    subDeleteIcon.addEventListener("click", function () {
+      db.collection("todo_items")
+        .doc(id)
+        .collection("subtask")
+        .doc(item?.id)
+        .delete()
+        .then(() => {
+          //deleted
+        })
+        .catch((err) => console.log(err));
+    });
     subTodoItems.push(subTodoItem);
   });
   document.querySelector(".sub_todo_items").replaceChildren(...subTodoItems);
