@@ -42,7 +42,7 @@ function changeThemeBg() {
 function changeThemeColor() {
   if (themeIcon.classList.contains("uil-moon")) {
     //This is Light Theme
-    rootElem.style.setProperty("--body-color", "hsl(233, 11%, 84%)");
+    rootElem.style.setProperty("--body-color", "hsl(0deg 0% 97%)");
     rootElem.style.setProperty("--light-color", "hsl(0, 0%, 98%)");
     rootElem.style.setProperty("--text-color", "hsl(233, 14%, 35%)");
     rootElem.style.setProperty("--text-color-light", "hsl(234, 39%, 85%)");
