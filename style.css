@@ -250,14 +250,14 @@ body {
 .search_grp{
   position: absolute;
   width: 100%;
-  min-height: 8rem;
-  height: auto;
+  height: 9rem;
   background-color: var(--light-color);
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: none;
   transition: 0.2s ease-in;
+  overflow-y: scroll;
 }
 .search_todo_input{
   z-index: 9;
