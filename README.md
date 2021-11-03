@@ -24,18 +24,16 @@ TODO-App is a Productivity(task) Application with complete functionality.
 
 # Features:
 - Able to CREATE, READ, UPDATE and DELETE the todo Item.
-- Able add sub-todo items to each todo item.
+- Able to CREATE, READ, UPDATE and DELETE sub-todo items to each todo item.
 - Able to mark the completed tasks as well.
 - Light and Dark Mode.
 - Able to Clear all the Completed Tasks at once.
+- Sorting of Todo Items based on "All", "Active" and "Completed" Categories.
 - Display the count of incompleted task dynamically.
-- Minimal Responsive UI.
+- Fully Responsive UI.
 
 <br>
 
-# Upcoming Features:
-- Sorting of Todo Items based on "All", "Active" and "Completed" Categories.
-- Fully Responsive UI.
 
 <br>
 <div align="center">
