@@ -78,13 +78,13 @@ body {
   width: 100%;
   height: 70px;
   background-color: var(--light-color);
-  margin-top: 50px;
+  margin-top: 15px;
   border-radius: 6px;
   display: flex;
 }
 .theme_toggle{
   height: 2rem;
-  width: 6rem;
+  width: 8rem;
   color: #ffffff;
   font-size: 2rem;
   display: flex;
@@ -92,7 +92,14 @@ body {
   align-items: center;
   cursor: pointer;
 }
-
+.user_name{
+  margin-top: 1.5rem;
+  color: #ffffff;
+  font-size: large;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
 
 .check{
   flex-basis: 90px;
@@ -191,7 +198,7 @@ body {
   background-color: var(--light-color);
   box-shadow: 0px 2px 30px 0px rgba(0,0,0,0.4);
   margin-bottom: 30px;
-
+  transition: 0.4s ease;
 }
 
 .todo_items_info {
@@ -250,13 +257,13 @@ body {
 .search_grp{
   position: absolute;
   width: 100%;
-  height: 9rem;
+  height: 12rem;
   background-color: var(--light-color);
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: none;
-  transition: 0.2s ease-in;
+  transition: 0.5s all;
   overflow-y: scroll;
 }
 .search_todo_input{
@@ -291,7 +298,7 @@ body {
   width: 100%;
   border: none;
   outline: none;
-  height: 2rem;
+  height: 1rem;
   color: var(--text-color);
   letter-spacing: 1px;
 }

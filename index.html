@@ -21,6 +21,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="./firebase.js"></script>
     <link
       rel="shortcut icon"
@@ -78,8 +79,10 @@
         <div id="theme-toggle" class="theme_toggle">
           <i id="search-icon" class="uil uil-search"></i>
           <i id="theme-icon" class="uil uil-moon"></i>
+          <i onclick="handleLogout()" class="uil uil-sign-out-alt"></i>
         </div>
       </div>
+      <p class="user_name" id="user-greeting"></p>
       <div id="search-grp" class="search_grp">
         <div class="search_todo_input">
           <form>

@@ -20,6 +20,26 @@ var pinnedDiv = document.querySelector(".pinned_div");
 var sortItems = document.querySelector(".items_statuses");
 var btns = sortItems.getElementsByTagName("span");
 var searchedTodos = document.getElementById("searched-todos");
+var userGreeting = document.getElementById("user-greeting");
+var todoItemsWrap = document.querySelector(".todo_items_wrapper");
+
+function handleLogout() {
+  auth.signOut();
+  localStorage.clear();
+}
+
+//Auth check
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    localStorage.setItem("user", JSON.stringify(user));
+    userGreeting.innerText = `Welcome, ${
+      JSON.parse(localStorage.getItem("user"))?.displayName
+    } `;
+  } else {
+    console.log("no user");
+    location = "login.html";
+  }
+});
 
 // Light / Dark Theme Functions
 function changeThemeIcon() {
@@ -68,18 +88,21 @@ themeIcon.addEventListener("click", () => {
 // Firebase Stuff
 
 function getItems() {
-  db.collection("todo_items").onSnapshot((snapshot) => {
-    let items = [];
-    snapshot.docs.forEach((doc) => {
-      items.push({
-        id: doc.id,
-        ...doc.data(),
+  db.collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .onSnapshot((snapshot) => {
+      let items = [];
+      snapshot.docs.forEach((doc) => {
+        items.push({
+          id: doc.id,
+          ...doc.data(),
+        });
       });
+      generateItems(items);
+      clearTasksBtn(items);
+      sItems = items;
     });
-    generateItems(items);
-    clearTasksBtn(items);
-    sItems = items;
-  });
 }
 
 function clearTasksBtn(items) {
@@ -165,21 +188,29 @@ function generateItems(items) {
 }
 
 function removePinTask(id) {
-  db.collection("todo_items").doc(id).set(
-    {
-      pinned: false,
-    },
-    { merge: true }
-  );
+  db.collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .doc(id)
+    .set(
+      {
+        pinned: false,
+      },
+      { merge: true }
+    );
 }
 
 function createPinTask(id) {
-  db.collection("todo_items").doc(id).set(
-    {
-      pinned: true,
-    },
-    { merge: true }
-  );
+  db.collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .doc(id)
+    .set(
+      {
+        pinned: true,
+      },
+      { merge: true }
+    );
 }
 
 // Function for Edit and Delete Actions
@@ -192,6 +223,8 @@ function iconsAction(id, type) {
         e.preventDefault();
         let updateText = editInput.value;
         let updateTodo = db
+          .collection("users")
+          .doc(JSON.parse(localStorage.getItem("user")).uid)
           .collection("todo_items")
           .doc(id)
           .update({
@@ -207,7 +240,9 @@ function iconsAction(id, type) {
     };
   } else if (type === "delete") {
     deleteIcon.onclick = function (event) {
-      db.collection("todo_items")
+      db.collection("users")
+        .doc(JSON.parse(localStorage.getItem("user")).uid)
+        .collection("todo_items")
         .doc(id)
         .delete()
         .then(() => {
@@ -226,20 +261,29 @@ function iconsAction(id, type) {
 function addItem(event) {
   event.preventDefault();
   let text = document.getElementById("todo-input");
-  let newItem = db.collection("todo_items").doc().set(
-    {
-      pinned: false,
-      text: text.value,
-      status: "active",
-    },
-    { merge: true }
-  );
+  let newItem = db
+    .collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .doc()
+    .set(
+      {
+        pinned: false,
+        text: text.value,
+        status: "active",
+      },
+      { merge: true }
+    );
   text.value = "";
   toast("Todo Created");
 }
 
 function markCompleted(id) {
-  let item = db.collection("todo_items").doc(id);
+  let item = db
+    .collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .doc(id);
   item.get().then(function (doc) {
     if (doc.exists) {
       if (doc.data().status == "active") {
@@ -256,6 +300,8 @@ function markCompleted(id) {
 }
 function clearCompleted() {
   var completedDoc = db
+    .collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
     .collection("todo_items")
     .where("status", "==", "completed");
   completedDoc
@@ -288,20 +334,23 @@ function toast(text) {
 
 function checkPending() {
   let totalLeftItems = [];
-  db.collection("todo_items").onSnapshot((snapshot) => {
-    snapshot.docs.forEach((doc) => {
-      if (doc.exists) {
-        if (doc.data().status === "active") {
-          totalLeftItems.push(doc.data());
-          totalPendingItems.innerHTML = `${totalLeftItems.length} items left`;
+  db.collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
+    .onSnapshot((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        if (doc.exists) {
+          if (doc.data().status === "active") {
+            totalLeftItems.push(doc.data());
+            totalPendingItems.innerHTML = `${totalLeftItems.length} items left`;
+          }
         }
-      }
-      if (totalLeftItems.length === 0) {
-        totalPendingItems.innerHTML = `0 items left`;
-      }
+        if (totalLeftItems.length === 0) {
+          totalPendingItems.innerHTML = `0 items left`;
+        }
+      });
+      totalLeftItems = [];
     });
-    totalLeftItems = [];
-  });
 }
 
 function openModal(item) {
@@ -320,6 +369,8 @@ function openModal(item) {
     event.preventDefault();
     const text = document.getElementById("modal-inp");
     const newItem = db
+      .collection("users")
+      .doc(JSON.parse(localStorage.getItem("user")).uid)
       .collection("todo_items")
       .doc(item.id)
       .collection("subtask")
@@ -342,7 +393,9 @@ function openModal(item) {
 }
 
 function handleSubtodo(id) {
-  db.collection("todo_items")
+  db.collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
+    .collection("todo_items")
     .doc(id)
     .collection("subtask")
     .onSnapshot((snapshot) => {
@@ -391,8 +444,10 @@ function generateSubTodoItems(subItems, id) {
     subEditForm.appendChild(subInput);
     subEditForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      let text = subInput.value;
-      db.collection("todo_items")
+      const text = subInput.value;
+      db.collection("users")
+        .doc(JSON.parse(localStorage.getItem("user")).uid)
+        .collection("todo_items")
         .doc(id)
         .collection("subtask")
         .doc(item.id)
@@ -436,7 +491,9 @@ function generateSubTodoItems(subItems, id) {
       }
     });
     subDeleteIcon.addEventListener("click", function () {
-      db.collection("todo_items")
+      db.collection("users")
+        .doc(JSON.parse(localStorage.getItem("user")).uid)
+        .collection("todo_items")
         .doc(id)
         .collection("subtask")
         .doc(item?.id)
@@ -453,6 +510,8 @@ function generateSubTodoItems(subItems, id) {
 
 function markSubItemComplete(id, mainId) {
   let item = db
+    .collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
     .collection("todo_items")
     .doc(mainId)
     .collection("subtask")
@@ -474,6 +533,8 @@ function markSubItemComplete(id, mainId) {
 
 function clearSubCompleted(id) {
   var completedDoc = db
+    .collection("users")
+    .doc(JSON.parse(localStorage.getItem("user")).uid)
     .collection("todo_items")
     .doc(id)
     .collection("subtask")
@@ -547,8 +608,12 @@ function getSort() {
 searchIcon.addEventListener("click", function () {
   if (searchGrp.style.display !== "none") {
     searchGrp.style.display = "none";
+    userGreeting.style.display = "block";
+    todoItemsWrap.style.marginTop = "30px";
   } else {
     searchGrp.style.display = "block";
+    userGreeting.style.display = "none";
+    todoItemsWrap.style.marginTop = "130px";
   }
 });
 
