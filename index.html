@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
     <link
       rel="stylesheet"
       href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
@@ -22,109 +22,43 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="./firebase.js"></script>
+    <script src="/firebase.js"></script>
     <link
       rel="shortcut icon"
       href="/assets/images/favicon-32x32.png"
       type="image/x-icon"
     />
-    <title>TODO</title>
+    <title>TODO | Login</title>
   </head>
   <body>
-    <div id="modal-grp" class="modal_overlay">
-      <div class="modal_content">
-        <div id="modal-close" class="modal_close">X</div>
-        <div id="modal-inner" class="modal_inner">
-          <div class="modal_heading">
-            <h3 id="todo-name"></h3>
-            <div class="todo_icons">
-              <i id="edit-icon" class="uil uil-pen"></i>
-              <i id="delete-icon" class="uil uil-trash"></i>
-            </div>
-          </div>
-          <form id="edit-form">
-            <input
-              id="edit-inp"
-              type="text"
-              class="edit_inp"
-              placeholder="New Task Name"
-            />
+    <div class="login_container">
+      <div class="login1">
+        <img
+          class="login_img"
+          src="/assets/images/todo-sign-bg.jpg"
+          alt="img"
+        />
+      </div>
+      <div class="login2">
+        <div>
+          <h1>TODO | Login</h1>
+        </div>
+        <div class="login2_child">
+          <form id="login-form" class="login_form">
+            <p>Email</p>
+            <input id="login-email-inp" type="email" required />
+            <p>Password</p>
+            <input id="login-password-inp" type="password" required />
+            <button type="submit">Log in</button>
           </form>
-          <div class="modal_items">
-            <form id="modal-form">
-              <input
-                id="modal-inp"
-                class="modal_inp"
-                required
-                type="text"
-                placeholder="Add a Sub-Todo"
-              />
-            </form>
-            <div class="sub_todo_items">
-              <!--All the items will be added here dynamically-->
-            </div>
-            <div id="clear-sub" class="clear_subitems">
-              <p>Clear Completed</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="background_img">
-      <img id="bg-img" src="/assets/images/bg-desktop-light.jpg" alt="" />
-    </div>
-    <div class="container">
-      <div class="header">
-        <div class="title">TODO</div>
-        <div id="theme-toggle" class="theme_toggle">
-          <i id="search-icon" class="uil uil-search"></i>
-          <i id="theme-icon" class="uil uil-moon"></i>
-          <i onclick="handleLogout()" class="uil uil-sign-out-alt"></i>
-        </div>
-      </div>
-      <p class="user_name" id="user-greeting"></p>
-      <div id="search-grp" class="search_grp">
-        <div class="search_todo_input">
-          <form>
-            <input
-              id="search-todo-input"
-              type="text"
-              placeholder="Search a TODO..."
-            />
-          </form>
-        </div>
-        <div class="searched_todos" id="searched-todos"></div>
-      </div>
-      <div id="new-todo" class="new_todo">
-        <div class="s_check"></div>
-        <div class="check">
-          <div class="check_mark"></div>
-        </div>
-        <div class="new_todo_input">
-          <form onsubmit="addItem(event)">
-            <input
-              id="todo-input"
-              type="text"
-              placeholder="Create a new TODO..."
-              required
-            />
-          </form>
-        </div>
-      </div>
-      <div class="todo_items_wrapper">
-        <div class="pinned_div"></div>
-        <div class="todo_items">
-          <!--All the items will be added here dynamically-->
-        </div>
-        <div id="todo-info" class="todo_items_info">
-          <div id="pending-items" class="items_left"></div>
-          <div class="items_statuses">
-            <span class="all active">All</span>
-            <span class="act">Active</span>
-            <span class="com">Completed</span>
-          </div>
-          <div id="items-clear" onclick="clearCompleted()" class="items_clear">
-            <span>Clear Completed</span>
+          <div>
+            <p>----- or -----</p>
+            <button id="guest-btn">Guest Login</button>
+            <p>----- or -----</p>
+            <p>
+              Don't have an account?
+              <a style="text-decoration: none" href="/signup.html">Signup</a>
+            </p>
           </div>
         </div>
       </div>

@@ -16,28 +16,44 @@ function toast(text) {
   }).showToast();
 }
 
+function signup(email, password, username) {
+  if (email && password && username) {
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        if (user) {
+          const currUser = auth.currentUser;
+          currUser
+            .updateProfile({
+              displayName: username,
+            })
+            .then(() => {
+              // Update successful
+              location = "login.html";
+              toast("Account Created Successfully. Please Login");
+            })
+            .catch((error) => {
+              // An error occurred
+              toast(error.message);
+            });
+        }
+      })
+      .catch((err) => toast(err.message));
+  } else if (!password) {
+    toast("Please Enter a Valid Password");
+  } else if (!username) {
+    toast("Username Cannot be Empty");
+  } else {
+    toast("Please Enter Valid Details in the Fields");
+  }
+}
+
 // Signup
 signupForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  auth
-    .createUserWithEmailAndPassword(email.value, password.value)
-    .then((user) => {
-      if (user) {
-        const currUser = auth.currentUser;
-        currUser
-          .updateProfile({
-            displayName: userName.value,
-          })
-          .then(() => {
-            // Update successful
-            location = "login.html";
-            toast("Account Created Successfully. Please Login");
-          })
-          .catch((error) => {
-            // An error occurred
-            toast(error.message);
-          });
-      }
-    })
-    .catch((err) => toast(err.message));
+  signup(
+    email.value.trimStart(),
+    password.value.trimStart(),
+    userName.value.trimStart()
+  );
 });
